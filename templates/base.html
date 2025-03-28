@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Webapps2025{% endblock %}</title>
+
+    <!-- CSS Resources -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0070ba;
+            --primary-dark: #005f99;
+            --accent: #ff4b5c;
+            --accent-dark: #d93a50;
+            --light-bg: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding-bottom: 260px; /* Space for footer */
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 12px 0;
+        }
+        
+        .navbar-brand {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .navbar-brand-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+        
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 100px;
+            margin: 0 3px;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(0, 112, 186, 0.08);
+            color: var(--primary) !important;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(0, 112, 186, 0.1);
+            color: var(--primary) !important;
+        }
+        
+        .btn-custom {
+            background: var(--primary);
+            color: white !important;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 100px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+            color: white !important;
+        }
+        
+        .btn-accent:hover {
+            background: var(--accent-dark);
+        }
+        
+        .user-menu {
+            background-color: #f1f8ff;
+            border-radius: 100px;
+            padding: 4px 16px 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary) !important;
+        }
+        
+        .user-menu i {
+            background-color: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+
+        /* Page Content */
+        .page-container {
+            width: 92%;
+            max-width: 1280px;
+            margin: 30px auto;
+        }
+        
+        /* Override container styling from earlier */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        /* Card styling */
+        .card {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.25rem;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: white;
+            color: #555;
+            padding: 40px 0 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .footer h5 {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        .security-badge {
+            background-color: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 100px;
+            padding: 4px 12px;
+            font-size: 12px;
+            color: #666;
+            display: inline-block;
+            margin: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Replace the entire navigation section with this code -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <span class="navbar-brand-icon">
+                    <i class="fas fa-wallet"></i>
+                </span>
+                PayApp
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                            <!-- Admin sees only dropdown menu -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link user-menu dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-shield"></i> Admin: {{ user.username }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+                                        <i class="fas fa-tools me-2 text-muted"></i> Admin Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'create_admin' %}">
+                                        <i class="fas fa-user-shield me-2 text-muted"></i> Create Admin
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2 text-muted"></i> Logout
+                                    </a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <!-- Regular users see all navigation options -->
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" href="{% url 'dashboard' %}">
+                                    <i class="fas fa-chart-line me-1"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == '/transaction_history/' %}active{% endif %}" href="{% url 'transaction_history' %}">
+                                    <i class="fas fa-history me-1"></i> Transactions
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link user-menu dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle"></i> {{ user.username }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">
+                                        <i class="fas fa-cog me-2 text-muted"></i> Settings
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2 text-muted"></i> Logout
+                                    </a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus me-1"></i> Register
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn-custom" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content Wrapper -->
+    <div class="page-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="container-fluid px-4">
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="navbar-brand-icon me-2">
+                            <i class="fas fa-wallet"></i>
+                        </span>
+                        <h5 class="mb-0">PayApp</h5>
+                    </div>
+                    <p class="text-muted">A secure and easy way to send and receive money online.</p>
+                    <div class="d-flex security-badges mb-3">
+                        <span class="security-badge me-2">
+                            <i class="fas fa-shield-alt me-1"></i> Secured
+                        </span>
+                        <span class="security-badge">
+                            <i class="fas fa-lock me-1"></i> Encrypted
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="#"><i class="fas fa-paper-plane me-2 opacity-50"></i>Send Money</a></li>
+                                <li class="mb-2"><a href="#"><i class="fas fa-hand-holding-usd me-2 opacity-50"></i>Request Money</a></li>
+                                <li class="mb-2"><a href="#"><i class="fas fa-history me-2 opacity-50"></i>Transactions</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="#"><i class="fas fa-question-circle me-2 opacity-50"></i>Help</a></li>
+                                <li class="mb-2"><a href="#"><i class="fas fa-info-circle me-2 opacity-50"></i>About</a></li>
+                                <li class="mb-2"><a href="#"><i class="fas fa-comment-dots me-2 opacity-50"></i>Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <p class="mb-2"><i class="fas fa-envelope me-2 text-muted"></i> support@payapp.com</p>
+                    <p class="mb-2"><i class="fas fa-phone me-2 text-muted"></i> +44 123 456 7890</p>
+                    <p><i class="fas fa-map-marker-alt me-2 text-muted"></i> 123 Finance St, London, UK</p>
+                </div>
+                <div class="col-md-6 col-lg-2 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Follow Us</h6>
+                    <div class="social-icons mb-3">
+                        <a href="#" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
+                    <a href="#" class="btn btn
+                </div>
+            </div>
+            <div class="footer-bottom text-center mt-4">
+                <p class="small text-muted mb-0">© 2025 PayApp. All rights reserved.</p>
+                <div class="mt-2">
+                    <a href="#" class="small text-muted me-3">Terms of Service</a>
+                    <a href="#" class="small text-muted">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Resources -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Requests - PayApp{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Payment Requests</h2>
+        <a href="{% url 'request_money' %}" class="btn-custom">
+            <i class="fas fa-plus me-2"></i>New Request
+        </a>
+    </div>
+    
+    <!-- Display any messages -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Payment request summary cards -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-arrow-down text-primary fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Received Requests</h6>
+                        <h4 class="mb-0">{{ received_requests|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="rounded-circle bg-secondary bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-arrow-up text-secondary fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Sent Requests</h6>
+                        <h4 class="mb-0">{{ sent_requests|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabbed interface -->
+    <ul class="nav nav-tabs mb-4" id="requestTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received" type="button" role="tab" aria-controls="received" aria-selected="true">
+                <i class="fas fa-inbox me-2"></i>Received Requests
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent" type="button" role="tab" aria-controls="sent" aria-selected="false">
+                <i class="fas fa-paper-plane me-2"></i>Sent Requests
+            </button>
+        </li>
+        <!-- Add this after the existing tab buttons -->
+    </ul>
+    
+    <div class="tab-content" id="requestTabsContent">
+        <!-- Requests received from others -->
+        <div class="tab-pane fade show active" id="received" role="tabpanel" aria-labelledby="received-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-arrow-down text-primary me-2"></i>Requests Received
+                    </h5>
+                    <span class="badge bg-primary">{{ received_requests|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if received_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>From</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in received_requests %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle p-2 me-2">
+                                                <i class="fas fa-user text-primary"></i>
+                                            </div>
+                                            {{ request.requester.email }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">
+                                            {% if request.currency == 'GBP' %}£{% elif request.currency == 'USD' %}${% elif request.currency == 'EUR' %}€{% endif %}{{ request.amount }}
+                                        </span>
+                                        <!-- <small class="text-muted">{{ request.currency }}</small> -->
+                                    </td>
+                                    <td>
+                                        <div>{{ request.timestamp|date:"M d, Y" }}</div>
+                                        <small class="text-muted">{{ request.timestamp|date:"H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'handle_payment_request' request.id 'accept' %}" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-check me-1"></i> Accept
+                                            </a>
+                                            <a href="{% url 'handle_payment_request' request.id 'reject' %}" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">You have no pending payment requests</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Requests sent to others -->
+        <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-paper-plane text-secondary me-2"></i>Requests Sent
+                    </h5>
+                    <span class="badge bg-secondary">{{ sent_requests|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if sent_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>To</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in sent_requests %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle p-2 me-2">
+                                                <i class="fas fa-user text-secondary"></i>
+                                            </div>
+                                            {{ request.requested_user.email }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">
+                                            {% if request.currency == 'GBP' %}£{% elif request.currency == 'USD' %}${% elif request.currency == 'EUR' %}€{% endif %}{{ request.amount }}
+                                        </span>
+                                        <small class="text-muted">{{ request.currency }}</small>
+                                    </td>
+                                    <td>
+                                        <div>{{ request.timestamp|date:"M d, Y" }}</div>
+                                        <small class="text-muted">{{ request.timestamp|date:"H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if request.status == 'PENDING' %}bg-warning{% endif %}
+                                            {% if request.status == 'COMPLETED' %}bg-success{% endif %}
+                                            {% if request.status == 'REJECTED' %}bg-danger{% endif %}">
+                                            <i class="fas 
+                                                {% if request.status == 'PENDING' %}fa-clock{% endif %}
+                                                {% if request.status == 'COMPLETED' %}fa-check-circle{% endif %}
+                                                {% if request.status == 'REJECTED' %}fa-times-circle{% endif %}
+                                                me-1"></i>
+                                            {{ request.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-paper-plane fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">You haven't sent any payment requests yet</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Completed requests -->
+        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle text-success me-2"></i>Completed Requests
+                    </h5>
+                    <span class="badge bg-success">
+                        {% with completed_count=0 %}
+                            {% for request in sent_requests %}
+                                {% if request.status == 'COMPLETED' %}
+                                    {% with completed_count=completed_count|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {% for request in all_received_requests %}
+                                {% if request.status == 'COMPLETED' %}
+                                    {% with completed_count=completed_count|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ completed_count }}
+                        {% endwith %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <!-- Completed Sent Requests -->
+                    <h6 class="mb-3"><i class="fas fa-paper-plane text-secondary me-2"></i>Sent & Completed</h6>
+                    {% with has_completed_sent=False %}
+                        {% for request in sent_requests %}
+                            {% if request.status == 'COMPLETED' %}
+                                {% with has_completed_sent=True %}{% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if has_completed_sent %}
+                        <div class="table-responsive mb-4">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>To</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in sent_requests %}
+                                        {% if request.status == 'COMPLETED' %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded-circle p-2 me-2">
+                                                        <i class="fas fa-user text-secondary"></i>
+                                                    </div>
+                                                    {{ request.requested_user.email }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold">
+                                                    {% if request.currency == 'GBP' %}£{% elif request.currency == 'USD' %}${% elif request.currency == 'EUR' %}€{% endif %}{{ request.amount }}
+                                                </span>
+                                                <small class="text-muted">{{ request.currency }}</small>
+                                            </td>
+                                            <td>
+                                                <div>{{ request.timestamp|date:"M d, Y" }}</div>
+                                                <small class="text-muted">{{ request.timestamp|date:"H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    {{ request.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-light text-center">
+                            <i class="fas fa-info-circle me-2"></i>
+                            You don't have any completed sent requests
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Completed Received Requests -->
+                    <h6 class="mb-3"><i class="fas fa-inbox text-primary me-2"></i>Received & Completed</h6>
+                    {% with has_completed_received=False %}
+                        {% for request in all_received_requests %}
+                            {% if request.status == 'COMPLETED' %}
+                                {% with has_completed_received=True %}{% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if has_completed_received %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in all_received_requests %}
+                                        {% if request.status == 'COMPLETED' %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded-circle p-2 me-2">
+                                                        <i class="fas fa-user text-primary"></i>
+                                                    </div>
+                                                    {{ request.requester.email }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold">
+                                                    {% if request.currency == 'GBP' %}£{% elif request.currency == 'USD' %}${% elif request.currency == 'EUR' %}€{% endif %}{{ request.amount }}
+                                                </span>
+                                                <small class="text-muted">{{ request.currency }}</small>
+                                            </td>
+                                            <td>
+                                                <div>{{ request.timestamp|date:"M d, Y" }}</div>
+                                                <small class="text-muted">{{ request.timestamp|date:"H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    {{ request.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-light text-center">
+                            <i class="fas fa-info-circle me-2"></i>
+                            You don't have any completed received requests
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4 text-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

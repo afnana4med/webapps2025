@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Main container with semi-transparent border -->
+            <div class="border border-opacity-50 rounded-4 p-4 shadow-sm bg-white">
+                <!-- Dashboard Header -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary mb-1">Payment Dashboard</h2>
+                    <p class="text-muted">Welcome back, <strong>{{ user.username }}</strong></p>
+                    <hr class="opacity-25 my-3">
+                </div>
+                
+                <!-- Account Balance Section -->
+                <div class="mb-4 p-3 bg-light bg-opacity-75 rounded-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h4 class="m-0"><i class="fas fa-wallet text-primary me-2"></i>Account Balance</h4>
+                        <span class="badge bg-light text-dark border">{{ account.currency }}</span>
+                    </div>
+                    {% if account %}
+                        <div class="d-flex align-items-center">
+                            <span class="display-6 fw-bold text-success">{{ account.balance|floatformat:2 }}</span>
+                            <span class="ms-2 text-muted small">available balance</span>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger d-flex align-items-center border-0 bg-danger bg-opacity-10">
+                            <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
+                            <div>No account found. Please contact support.</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="p-3 bg-light bg-opacity-50 rounded-3 mb-4">
+                    <h5 class="text-muted mb-3">Quick Actions</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{% url 'payment' %}" class="btn btn-success w-100 p-3 rounded-3 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-paper-plane me-3 fs-5"></i>
+                                <div class="text-start">
+                                    <strong>Send Money</strong>
+                                    <div class="small opacity-75">Transfer to another account</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'request_money' %}" class="btn btn-primary w-100 p-3 rounded-3 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-hand-holding-usd me-3 fs-5"></i>
+                                <div class="text-start">
+                                    <strong>Request Money</strong>
+                                    <div class="small opacity-75">Ask for payment</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Features Section -->
+                <div class="p-3 bg-light bg-opacity-25 rounded-3">
+                    <h5 class="text-muted mb-3">Account Management</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="{% url 'transaction_history' %}" class="card text-decoration-none h-100 border-0 shadow-sm">
+                                <div class="card-body d-flex flex-column align-items-center text-center p-3">
+                                    <div class="rounded-circle bg-info bg-opacity-25 p-3 mb-2">
+                                        <i class="fas fa-history text-info"></i>
+                                    </div>
+                                    <h6 class="card-title">Transaction History</h6>
+                                    <p class="card-text small text-muted">View all transactions</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'generate_pdf' %}" class="card text-decoration-none h-100 border-0 shadow-sm">
+                                <div class="card-body d-flex flex-column align-items-center text-center p-3">
+                                    <div class="rounded-circle bg-warning bg-opacity-25 p-3 mb-2">
+                                        <i class="fas fa-file-download text-warning"></i>
+                                    </div>
+                                    <h6 class="card-title">Download Statement</h6>
+                                    <p class="card-text small text-muted">Get PDF report</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'payment_requests' %}" class="card text-decoration-none h-100 border-0 shadow-sm">
+                                <div class="card-body d-flex flex-column align-items-center text-center p-3">
+                                    <div class="rounded-circle bg-secondary bg-opacity-25 p-3 mb-2">
+                                        <i class="fas fa-bell text-secondary"></i>
+                                    </div>
+                                    <h6 class="card-title">Payment Requests</h6>
+                                    <p class="card-text small text-muted">Manage your requests</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

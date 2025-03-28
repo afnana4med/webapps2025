@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Money - PayApp{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-hand-holding-usd text-primary me-2"></i>Request Money
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Display any messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- Request information -->
+                    <div class="mb-4">
+                        <div class="alert alert-info bg-light border-0">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="fas fa-info-circle fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="alert-heading">Request Money from Anyone</h5>
+                                    <p class="mb-0">Send a payment request to any PayApp user. They'll receive a notification to complete the payment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Request money form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="receiver_email" class="form-label">
+                                <i class="fas fa-user me-2 text-muted"></i>Request From (Email)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-envelope text-muted"></i>
+                                </span>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="receiver_email" 
+                                    name="receiver_email" 
+                                    placeholder="example@email.com"
+                                    required
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-text text-muted">Enter the email address of the person you're requesting money from</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="amount" class="form-label">
+                                <i class="fas fa-money-bill-wave me-2 text-muted"></i>Amount
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    {% if user.account.currency == 'GBP' %}
+                                        <i class="fas fa-pound-sign text-muted"></i>
+                                    {% elif user.account.currency == 'USD' %}
+                                        <i class="fas fa-dollar-sign text-muted"></i>
+                                    {% elif user.account.currency == 'EUR' %}
+                                        <i class="fas fa-euro-sign text-muted"></i>
+                                    {% endif %}
+                                </span>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    id="amount" 
+                                    name="amount" 
+                                    step="0.01" 
+                                    min="0.01" 
+                                    placeholder="0.00"
+                                    required>
+                            </div>
+                            <div class="form-text text-muted">Enter the amount you want to request</div>
+                        </div>
+                        
+                        <!-- <div class="mb-4">
+                            <label for="notes" class="form-label">
+                                <i class="fas fa-sticky-note me-2 text-muted"></i>Notes (Optional)
+                            </label>
+                            <textarea 
+                                name="notes" 
+                                id="notes" 
+                                class="form-control" 
+                                placeholder="What's this request for?" 
+                                rows="2"></textarea>
+                        </div> -->
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn-custom btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Request
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">📜 Transaction History</h2>
+
+    {% if transactions %}
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Recipient/Sender</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ transaction.amount|floatformat:2 }} {{ transaction.currency }}</td>
+                    <td>{{ transaction.related_user }}</td>
+                    <td>
+                        {% if transaction.status == "Completed" %}
+                            <span class="badge bg-success">✅ Completed</span>
+                        {% elif transaction.status == "Pending" %}
+                            <span class="badge bg-warning">⏳ Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">❌ Failed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center text-muted">No transactions found.</p>
+    {% endif %}
+
+    <div class="text-center mt-3">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">🏠 Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
