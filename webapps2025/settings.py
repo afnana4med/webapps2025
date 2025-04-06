@@ -12,15 +12,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+import socket
 
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ✅ Security Settings
 SECRET_KEY = "django-insecure-u7bx1!ya5#p%in^*j(6jn09&%6ce!ljq-v9y$73ushmh8ae4^$"
-DEBUG = True  # ⚠️ Keep False in Production
+DEBUG = True # False during production deployment
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # Allow localhost connections
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '54.236.105.176', 'ec2-54-236-105-176.compute-1.amazonaws.com']  # Allow localhost connections
 
 # ✅ Installed Applications
 INSTALLED_APPS = [
@@ -32,7 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'register',  # User authentication
     'payapp',    # Payment functionalities
-    'sslserver',  # HTTPS Support in Development (Remove in Production)
     'crispy_forms',
     'crispy_bootstrap5',
     'currency_api',  # ✅ Add this for Bootstrap 5 support
@@ -45,8 +45,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
-# ✅ Security & CSRF Protection
-SECURE_SSL_REDIRECT = False  # Enable in production
+# ✅ Security & CSRF Protection -- False during production deployment
+SECURE_SSL_REDIRECT = False
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
@@ -54,10 +54,16 @@ SESSION_COOKIE_SECURE = False
 # Clickjacking Protection
 X_FRAME_OPTIONS = 'DENY'
 
+
+# SECURE_HSTS_SECONDS = 31536000  # 1-year enforcement
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
 # HTTP Security Headers
-SECURE_HSTS_SECONDS = 31536000  # 1-year enforcement
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+
 
 # ✅ Middleware
 MIDDLEWARE = [
@@ -69,6 +75,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'http://54.236.105.176',
+    'https://54.236.105.176',
+    'http://ec2-54-236-105-176.compute-1.amazonaws.com',
+    'https://ec2-54-236-105-176.compute-1.amazonaws.com',
+]
+
 
 # ✅ URL Configuration
 ROOT_URLCONF = "webapps2025.urls"
