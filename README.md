@@ -1,18 +1,50 @@
-# Webapps2025 Django Project
+# WebApps 2025 – Django Project
 
-## Project Description
-This is a user registration and payment web application built using Django and deployed on AWS EC2.
+This is a Django-based web application developed for WebApps 2025 coursework. It includes user registration, login, payment module, and external API integration.
 
-## Deployment Details
-- **Server:** AWS EC2 Ubuntu 22.04
-- **Backend:** Django 5.1.7
-- **Database:** SQLite (for development)
+---
 
-## Steps to Run on EC2
-1. SSH into the EC2 instance: ssh -i ~/Downloads/webapps2025.pem ubuntu@54.236.148.173
-2. Activate virtual environment: cd ~/webapps2025 source venv/bin/activate
-3. Run server: python manage.py runserver 0.0.0.0:8000
-4. Access in browser: http://54.236.148.173:8000
+## 🚀 Features
 
+- User authentication
+- Payment app
+- Currency API integration
+- Bootstrap 5 UI using crispy forms
+- Admin panel
 
+---
 
+## ⚙️ Technologies Used
+
+- Django 5.1.7
+- Python 3.12 (or 3.10+ recommended for SSL)
+- SQLite (for dev)
+- Bootstrap 5
+- PDFKit
+- REST Framework
+
+---
+
+## 🖥️ Local Setup Instructions
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/yourusername/webapps2025.git
+cd webapps2025
+
+# 2. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # Or venv\Scripts\activate on Windows
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Apply migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# 5. Create a superuser
+python manage.py createsuperuser
+
+# 6. Run the development server
+python manage.py runserver
