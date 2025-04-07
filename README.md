@@ -53,5 +53,5 @@ python manage.py runserver
 
 Watch the demo:
 
-[▶️ Click to watch the demo video](demo.mp4)
+[▶️ Click to watch the demo video](userGuide.mp4)
 
