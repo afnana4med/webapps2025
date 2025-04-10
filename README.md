@@ -49,7 +49,7 @@ python manage.py createsuperuser
 # 6. Run the development server
 python manage.py runserver
 
-## 📽️ Project Walkthrough Video
+📽️ Project Walkthrough Video
 
 Watch the demo:
 
