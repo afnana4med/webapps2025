@@ -18,8 +18,8 @@ import socket
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ✅ Security Settings
-SECRET_KEY = "django-insecure-u7bx1!ya5#p%in^*j(6jn09&%6ce!ljq-v9y$73ushmh8ae4^$"
-DEBUG = True # False during production deployment
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-u7bx1!ya5#p%in^*j(6jn09&%6ce!ljq-v9y$73ushmh8ae4^$')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '54.236.105.176', 'ec2-54-236-105-176.compute-1.amazonaws.com']  # Allow localhost connections
 
@@ -45,10 +45,10 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
-# ✅ Security & CSRF Protection -- False during production deployment
-SECURE_SSL_REDIRECT = False
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+# ✅ Security & CSRF Protection
+SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.environ.get('DJANGO_CSRF_COOKIE_SECURE', 'False') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('DJANGO_SESSION_COOKIE_SECURE', 'False') == 'True'
 
 
 # Clickjacking Protection
