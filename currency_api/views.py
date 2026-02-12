@@ -2,13 +2,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 import json
-
-# Dictionary of supported currencies and their rates against GBP
-CURRENCY_RATES = {
-    'GBP': 1.0,
-    'USD': 1.28,
-    'EUR': 1.17,
-}
+from payapp.models import CONVERSION_RATES
+from decimal import Decimal
 
 @api_view(['GET'])
 def currency_conversion(request, currency1, currency2, amount):
@@ -24,13 +19,13 @@ def currency_conversion(request, currency1, currency2, amount):
     currency2 = currency2.upper()
     
     # Validate currencies
-    if currency1 not in CURRENCY_RATES:
+    if currency1 not in CONVERSION_RATES:
         return JsonResponse(
             {"error": f"Currency '{currency1}' is not supported"}, 
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    if currency2 not in CURRENCY_RATES:
+    if currency2 not in CONVERSION_RATES:
         return JsonResponse(
             {"error": f"Currency '{currency2}' is not supported"}, 
             status=status.HTTP_400_BAD_REQUEST
@@ -52,21 +47,21 @@ def currency_conversion(request, currency1, currency2, amount):
     
     # Calculate conversion rate and converted amount
     # Convert from currency1 to GBP and then to currency2
-    rate_to_gbp = 1 / CURRENCY_RATES[currency1]
-    gbp_amount = amount * rate_to_gbp
-    converted_amount = gbp_amount * CURRENCY_RATES[currency2]
+    rate_to_gbp = Decimal('1.0') / CONVERSION_RATES[currency1]
+    gbp_amount = Decimal(str(amount)) * rate_to_gbp
+    converted_amount = gbp_amount * CONVERSION_RATES[currency2]
     
     # Calculate direct conversion rate
-    conversion_rate = CURRENCY_RATES[currency2] / CURRENCY_RATES[currency1]
+    conversion_rate = CONVERSION_RATES[currency2] / CONVERSION_RATES[currency1]
     
     # Return the response
     response_data = {
         "from_currency": currency1,
         "to_currency": currency2,
         "amount": amount,
-        "conversion_rate": round(conversion_rate, 6),
-        "converted_amount": round(converted_amount, 2),
-        "supported_currencies": list(CURRENCY_RATES.keys())
+        "conversion_rate": round(float(conversion_rate), 6),
+        "converted_amount": round(float(converted_amount), 2),
+        "supported_currencies": list(CONVERSION_RATES.keys())
     }
     
     return JsonResponse(response_data, status=status.HTTP_200_OK)

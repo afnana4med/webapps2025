@@ -38,10 +38,7 @@ def send_money(request):
     # Clear any existing messages when loading the page
     if request.method == "GET":
         storage = messages.get_messages(request)
-        # Clear all messages
-        for _ in storage:
-            pass
-        storage.used = False
+        storage.used = True
 
     if request.method == "POST":
         receiver_email = request.POST.get("receiver_email")
@@ -91,8 +88,8 @@ def send_money(request):
                 messages.error(request, "Insufficient funds.")
                 return render(request, "payapp/send_money.html")
             
-            # Get receiver's preferred currency (assuming it's stored in their account)
-            receiver_currency = "GBP"  # Default to GBP
+            # Get receiver's preferred currency from their account
+            receiver_currency = receiver_account.currency
             
             # Convert amount if currencies differ
             if sender_currency != receiver_currency:

@@ -5,17 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .form import RegistrationForm
-from payapp.models import Account
+from payapp.models import Account, CONVERSION_RATES
 from django.db import models
 from django.utils import timezone
-
-
-# ✅ Hardcoded Conversion Rates (For Initial Balance)
-CONVERSION_RATES = {
-    "GBP": 1.0,   # Baseline
-    "USD": 1.25,  # GBP to USD
-    "EUR": 1.15,  # GBP to EUR
-}
 
 # ✅ Home Page (Landing Page)
 def home(request):
@@ -97,22 +89,6 @@ def dashboard(request):
     return render(request, "register/dashboard.html", {
         "user": request.user,
         "account": account
-    })
-
-
-# ✅ Admin Dashboard (Only Superusers Can Access)
-@login_required
-def admin_dashboard(request):
-    if not request.user.is_superuser:
-        messages.error(request, "Unauthorized Access!")
-        return redirect("dashboard")
-
-    users = User.objects.all()
-    user_accounts = Account.objects.all()
-
-    return render(request, "register/admin_dashboard.html", {
-        "users": users,
-        "user_accounts": user_accounts
     })
 
 

@@ -9,11 +9,12 @@ CURRENCY_CHOICES = [
     ('EUR', 'Euros (€)'),
 ]
 
-# ✅ Hardcoded Conversion Rates
+# ✅ Conversion Rates (Centralized source of truth)
+# All rates are relative to GBP as the baseline currency
 CONVERSION_RATES = {
     'GBP': Decimal('1.0'),  # Baseline
-    'USD': Decimal('1.25'),  # GBP to USD
-    'EUR': Decimal('1.15'),  # GBP to EUR
+    'USD': Decimal('1.28'),  # GBP to USD
+    'EUR': Decimal('1.17'),  # GBP to EUR
 }
 
 # ✅ User Account Model (Tracks Balances & Currency)
