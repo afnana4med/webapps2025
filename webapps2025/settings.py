@@ -21,6 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-u7bx1!ya5#p%in^*j(6jn09&%6ce!ljq-v9y$73ushmh8ae4^$')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
+# Validate SECRET_KEY in production
+if not DEBUG and SECRET_KEY.startswith('django-insecure-'):
+    raise ValueError(
+        'You must set DJANGO_SECRET_KEY environment variable in production. '
+        'Generate a new key with: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"'
+    )
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '54.236.105.176', 'ec2-54-236-105-176.compute-1.amazonaws.com']  # Allow localhost connections
 
 # ✅ Installed Applications
